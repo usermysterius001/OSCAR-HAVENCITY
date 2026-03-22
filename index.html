@@ -38,8 +38,6 @@
 </header>
 
 <div class="container">
-
-<!-- 15 CATEGORIAS COM ID ÚNICO -->
 <script>
 const personagens = [
 "Alder Florence","Arkan Chloropterus Good Zephir","Clarice Franchesca de Mordred",
@@ -59,12 +57,19 @@ const categorias = [
 {nome:"Personagem Mais Heroico", emoji:"⚡", desc:"Personagem que realizou os atos mais corajosos e inspiradores.", opcoes:personagens.slice(0,16)},
 {nome:"Personagem Mais Estratégico", emoji:"🧩", desc:"Personagem que se destacou pela inteligência e planos engenhosos.", opcoes:personagens.slice(0,16)},
 {nome:"Revelação do Ano", emoji:"🌟", desc:"Personagem que mais surpreendeu os espectadores.", opcoes:personagens.slice(0,16)},
-{nome:"Melhor Romance", emoji:"💌", desc:"Dupla ou casal com química mais marcante.", opcoes:personagens.slice(0,16)},
+{nome:"Melhor Romance", emoji:"💌", desc:"Dupla ou casal com química mais marcante.", opcoes:[
+"Alder x Dimitri","Arkan x Vexy","Gal-sal x Vexy","Henri x Dante","Henry x Henri",
+"Alder x Russel","Dimitri x July","Coelho Dourado x Efeitos especiais","Jason x Jota"
+]},
 {nome:"Melhor Amigo", emoji:"🤝", desc:"Personagem mais leal e confiável.", opcoes:personagens.slice(0,16)},
 {nome:"Vilão Mais Inteligente", emoji:"🧠", desc:"Antagonista que se destacou pelo planejamento e astúcia.", opcoes:personagens.slice(16)},
 {nome:"Vilão Mais Cruel", emoji:"💀", desc:"Antagonista que causou mais sofrimento.", opcoes:personagens.slice(16)},
 {nome:"Crossover Mais Interessante", emoji:"🔗", desc:"Personagem que teve melhor interação com outros universos/personagens.", opcoes:personagens.slice(0,16)},
-{nome:"Melhor Cena", emoji:"🎬", desc:"Cena ou momento mais marcante da história.", opcoes:personagens.slice(0,16)}
+{nome:"Melhor Cena", emoji:"🎬", desc:"Cena ou momento mais marcante da história.", opcoes:[
+"Morte de Sierra","Alder matando monstro gigante","Primeira cena de Aline",
+"Morte de Jason","Morte de Alder","C!Áster no laboratório","Morte de Gal-sal",
+"E se voltarem.... anos depois.."
+]}
 ];
 
 categorias.forEach((cat,i)=>{
@@ -80,7 +85,6 @@ categorias.forEach((cat,i)=>{
   `);
 });
 </script>
-
 </div>
 
 <!-- PAINEL ADMIN -->
@@ -113,7 +117,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Função de votar (igual antes)
 window.votar = (selectId,categoriaFirebase)=>{
   if(localStorage.getItem("votou_"+selectId)){
     alert("Você já votou nessa categoria.");
@@ -125,13 +128,12 @@ window.votar = (selectId,categoriaFirebase)=>{
   alert("Voto enviado!");
 }
 
-// Abrir painel admin com porcentagem e reset dentro
 window.abrirPainel=()=>{
   const senha = document.getElementById("senha").value;
   if(senha!="Araldo3004"){ alert("Senha incorreta"); return; }
 
   document.getElementById("painel").style.display="block";
-  document.getElementById("resetBtn").style.display="inline-block"; // mostra reset dentro do painel
+  document.getElementById("resetBtn").style.display="inline-block";
 
   onValue(ref(db,"votos"),snapshot=>{
     let dados=snapshot.val(); 
@@ -140,7 +142,6 @@ window.abrirPainel=()=>{
     for(let cat in dados){
       let contagem={};
       let total=0;
-
       for(let id in dados[cat]){
         let nome=dados[cat][id].nome;
         contagem[nome]=(contagem[nome]||0)+1;
@@ -162,7 +163,6 @@ window.abrirPainel=()=>{
   });
 }
 
-// Resetar votos
 window.resetar=()=>{
   const senha = document.getElementById("senha").value;
   if(senha!="Araldo3004"){ alert("Senha incorreta"); return; }
@@ -175,3 +175,5 @@ window.resetar=()=>{
   });
 }
 </script>
+</body>
+</html>
