@@ -3,32 +3,26 @@
 
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oscar Reborn AU - Oficial</title>
+<title>🏆 Oscar Reborn AU</title>
 
 <style>
 
 body{
-font-family:'Segoe UI',sans-serif;
-background-color:#0f0f0f;
+background:#0f0f0f;
 color:white;
+font-family:Arial;
 text-align:center;
 margin:0;
-padding-bottom:50px;
 }
 
 header{
-background:linear-gradient(180deg,#1a1a1a 0%,#0f0f0f 100%);
+background:#111;
 padding:30px;
-border-bottom:3px solid #ffd700;
-margin-bottom:20px;
+border-bottom:3px solid gold;
 }
 
 h1{
-color:#ffd700;
-text-transform:uppercase;
-margin:0;
-letter-spacing:2px;
+color:gold;
 }
 
 .container{
@@ -37,76 +31,36 @@ flex-wrap:wrap;
 justify-content:center;
 gap:20px;
 padding:20px;
-max-width:1200px;
-margin:auto;
 }
 
 .card{
 background:#1a1a1a;
-border:1px solid #333;
-border-radius:12px;
 padding:20px;
-width:280px;
-transition:0.3s;
-box-shadow:0 4px 15px rgba(0,0,0,0.5);
-}
-
-.card:hover{
-border-color:#ffd700;
-transform:translateY(-5px);
-}
-
-.card h2{
-color:#ffd700;
-font-size:1.1em;
-margin-top:0;
-height:45px;
-display:flex;
-align-items:center;
-justify-content:center;
+border-radius:10px;
+width:260px;
 }
 
 select{
 width:100%;
 padding:10px;
-margin:15px 0;
-background:#262626;
+margin:10px 0;
+background:#222;
 color:white;
-border:1px solid #444;
-border-radius:5px;
+border:none;
 }
 
-.btn-voto{
-width:100%;
-padding:12px;
-background:linear-gradient(45deg,#ffd700,#b8860b);
-color:black;
+button{
+background:gold;
 border:none;
+padding:10px;
 font-weight:bold;
 cursor:pointer;
-border-radius:5px;
-text-transform:uppercase;
-}
-
-#admin{
-margin-top:60px;
-padding:40px;
-background:#111;
-border-top:2px solid #333;
-}
-
-table{
 width:100%;
-max-width:600px;
-margin:15px auto;
-border-collapse:collapse;
-background:#1a1a1a;
 }
 
-td,th{
-border:1px solid #333;
-padding:10px;
-text-align:left;
+#ranking{
+margin-top:40px;
+font-size:18px;
 }
 
 </style>
@@ -118,194 +72,110 @@ text-align:left;
 <h1>🏆 OSCAR REBORN AU 🏆</h1>
 </header>
 
-<div class="container" id="cards-container"></div>
+<div class="container">
 
-<section id="admin">
-
-<h3>🔒 Painel Secreto</h3>
-
-<input type="password" id="senha" placeholder="Senha">
-
-<button onclick="abrirAdmin()">Ver Placar</button>
-
-<div id="res" style="display:none;margin-top:20px;"></div>
-
-</section>
-
-<script>
-
-const herois=[
-"Alder Florence",
-"Arkan Chloropterus Good Zephir",
-"Clarice Franchesca de Mordred",
-"Dante Montclair",
-"Dimitri Diometris",
-"Gal-Sal. 'Fritz'",
-"Jason Gewitter",
-"Jorenina 'Fritz' Electro",
-"Jota Dantas",
-"July Suertes",
-"Lúcio Davo 'Henri Juan'",
-"Luna",
-"Sierra Woods",
-"Tyler Stellarium",
-"Vexy Montclair"
-].sort();
-
-const viloes=[
-"Aline / Coelho Rosa",
-"Coelho Dourado",
-"Mike / Lobo Dourado",
-"Sarah Good"
-].sort();
-
-const casais=[
-"Arkan x Vexy Montclair",
-"Alder x Dimitri",
-"Gal sal x Vexy",
-"Dimitri x July",
-"\"Jota\" x Jason",
-"Alder x Braço"
-].sort();
-
-const todos=[...herois,...viloes].sort();
-
-const categorias=[
-{nome:"Melhor Protagonista",lista:herois},
-{nome:"Melhor Vilão",lista:viloes},
-{nome:"Melhor Casal (Shipp)",lista:casais},
-{nome:"Mais Medroso",lista:herois},
-{nome:"Saco de Pancadas",lista:herois},
-{nome:"Mais Misterioso",lista:herois},
-{nome:"Maior Drama / Surto",lista:herois},
-{nome:"Melhor Design",lista:herois},
-{nome:"Causador do Apocalipse",lista:todos}
-];
-
-const container=document.getElementById("cards-container");
-
-categorias.forEach((cat,index)=>{
-
-container.innerHTML+=`
 <div class="card">
 
-<h2>${cat.nome}</h2>
+<h2>Melhor Personagem</h2>
 
-<select id="sel-${index}">
-<option value="">Selecione...</option>
-${cat.lista.map(n=>`<option value="${n}">${n}</option>`).join("")}
+<select id="personagem">
+
+<option>Alder Florence</option>
+<option>Dante Montclair</option>
+<option>Tyler Stellarium</option>
+<option>Vexy Montclair</option>
+
 </select>
 
-<button class="btn-voto"
-onclick="votar('${cat.nome}','sel-${index}')">
-Votar
-</button>
+<button onclick="votar()">Votar</button>
 
 </div>
-`;
+
+</div>
+
+<h2>👑 Ranking</h2>
+
+<div id="ranking">Carregando votos...</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getDatabase,
+ref,
+push,
+onValue
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA16KL1HCJOype61vCoBJxjCJfJADh7H-A",
+
+authDomain: "oscar-votacao.firebaseapp.com",
+
+databaseURL: "https://oscar-votacao-default-rtdb.firebaseio.com",
+
+projectId: "oscar-votacao",
+
+storageBucket: "oscar-votacao.firebasestorage.app",
+
+messagingSenderId: "954222088315",
+
+appId: "1:954222088315:web:7591cc8184e7da0cf1d2de",
+
+measurementId: "G-XHMKH5B7L6"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+window.votar = function(){
+
+let nome = document.getElementById("personagem").value;
+
+push(ref(db,"votos"),{
+
+nome:nome
 
 });
 
-const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSdaNP0Voakl1j8l-VkaapwGX4mDnuOIP7QB7ji7_S_jK9o_3w/formResponse";
+alert("Voto enviado!");
 
-function votar(catNome,selectId){
+};
 
-const candidato=document.getElementById(selectId).value;
+const votosRef = ref(db,"votos");
 
-if(!candidato){
-alert("Selecione um nome!");
-return;
-}
+onValue(votosRef,(snapshot)=>{
 
-const formData=new FormData();
+let dados = snapshot.val();
 
-formData.append("entry.2044486346",catNome);
-formData.append("entry.314840254",candidato);
+let contagem = {};
 
-fetch(FORM_URL,{
-method:"POST",
-mode:"no-cors",
-body:formData
-})
-.then(()=>{
+for(let id in dados){
 
-alert("Voto registrado!");
+let n = dados[id].nome;
 
-let v=JSON.parse(localStorage.getItem("oscar_v_final")||"{}");
-
-if(!v[catNome]){
-v[catNome]={};
-}
-
-v[catNome][candidato]=(v[catNome][candidato]||0)+1;
-
-localStorage.setItem("oscar_v_final",JSON.stringify(v));
-
-})
-
-.catch(()=>alert("Erro ao votar."));
+contagem[n] = (contagem[n] || 0) + 1;
 
 }
 
-function abrirAdmin(){
+let ranking = Object.entries(contagem)
+.sort((a,b)=>b[1]-a[1]);
 
-if(document.getElementById("senha").value!=="30042012"){
-alert("Senha incorreta!");
-return;
-}
+let html="";
 
-const resDiv=document.getElementById("res");
+ranking.forEach(r=>{
 
-resDiv.style.display="block";
+html += r[0] + " — " + r[1] + " votos<br>";
 
-exibirPlacar();
+});
 
-}
+document.getElementById("ranking").innerHTML = html;
 
-function exibirPlacar(){
-
-let v=JSON.parse(localStorage.getItem("oscar_v_final")||"{}");
-
-let h="";
-
-for(let c in v){
-
-h+=`<h3>${c}</h3><table>`;
-
-for(let p in v[c]){
-
-h+=`<tr><td>${p}</td><td>${v[c][p]} votos</td></tr>`;
-
-}
-
-h+=`</table>`;
-
-}
-
-h+=`
-<br>
-<button onclick="resetar()"
-style="background:red;color:white;border:none;padding:10px;cursor:pointer;">
-RESETAR VOTOS LOCAIS
-</button>
-`;
-
-document.getElementById("res").innerHTML=
-h||"Nenhum voto local ainda.";
-
-}
-
-function resetar(){
-
-if(confirm("Zerar votos deste PC?")){
-
-localStorage.removeItem("oscar_v_final");
-
-exibirPlacar();
-
-}
-
-}
+});
 
 </script>
 
