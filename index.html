@@ -143,20 +143,42 @@
 
 <script>
     const PASS = "30042012";
+
     function abrirAdmin() {
         if(document.getElementById('senha').value !== PASS) return alert("Senha incorreta!");
         document.querySelector('.resultados').style.display = "block";
+        exibirResultados();
+    }
+
+    function exibirResultados() {
         let v = JSON.parse(localStorage.getItem('votos_oscar_v3') || '{}');
         let h = "";
-        for(let c in v) {
-            let t = Object.values(v[c]).reduce((a,b)=>a+b, 0);
-            h += `<h3>${c}</h3><table><tr><th>Nome</th><th>Votos</th><th>%</th></tr>`;
-            for(let o in v[c]) h += `<tr><td>${o}</td><td>${v[c][o]}</td><td>${((v[c][o]/t)*100).toFixed(1)}%</td></tr>`;
-            h += `</table>`;
+        
+        if (Object.keys(v).length === 0) {
+            h = "<p>Nenhum voto registrado localmente.</p>";
+        } else {
+            for(let c in v) {
+                let t = Object.values(v[c]).reduce((a,b)=>a+b, 0);
+                h += `<h3>${c}</h3><table><tr><th>Nome</th><th>Votos</th><th>%</th></tr>`;
+                for(let o in v[c]) {
+                    h += `<tr><td>${o}</td><td>${v[c][o]}</td><td>${((v[c][o]/t)*100).toFixed(1)}%</td></tr>`;
+                }
+                h += `</table>`;
+            }
         }
-        document.getElementById('res').innerHTML = h || "Os votos aparecerão aqui conforme as pessoas votarem neste computador.";
+        
+        // Adiciona o botão de Reset no final
+        h += `<br><button onclick="resetarVotosLocais()" style="background:#cc0000; color:white; border:none; padding:10px; cursor:pointer; border-radius:5px; font-weight:bold;">ZERAR VOTOS DESTE PC</button>`;
+        h += `<p style="font-size:0.7em; color:#888; margin-top:10px;">*Lembre-se de limpar o Google Forms manualmente também!</p>`;
+        
+        document.getElementById('res').innerHTML = h;
+    }
+
+    function resetarVotosLocais() {
+        if(confirm("Tem certeza que deseja apagar os votos salvos NESTE computador? Isso não apaga os dados da planilha do Google!")) {
+            localStorage.removeItem('votos_oscar_v3');
+            exibirResultados();
+            alert("Dados locais limpos!");
+        }
     }
 </script>
-
-</body>
-</html>
