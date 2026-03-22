@@ -59,8 +59,20 @@ width:100%;
 }
 
 #ranking{
-margin-top:40px;
+margin-top:30px;
 font-size:18px;
+display:none;
+}
+
+.admin{
+margin-top:40px;
+}
+
+input{
+padding:10px;
+background:#222;
+border:none;
+color:white;
 }
 
 </style>
@@ -93,41 +105,36 @@ font-size:18px;
 
 </div>
 
-<h2>👑 Ranking</h2>
+<div class="admin">
 
-<div id="ranking">Carregando votos...</div>
+<h3>🔐 Área do Administrador</h3>
+
+<input type="password" id="senhaAdmin" placeholder="Digite a senha">
+
+<button onclick="verResultados()">Ver resultados</button>
+
+</div>
+
+<h2 id="tituloRanking" style="display:none;">👑 Resultados</h2>
+
+<div id="ranking"></div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getDatabase,
-ref,
-push,
-onValue
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-
 apiKey: "AIzaSyBwArCoZgIUuxkmfn_3L2Up4GDW1-5UOkc",
-
 authDomain: "oscar-votacao-b114a.firebaseapp.com",
-
 databaseURL: "https://oscar-votacao-b114a-default-rtdb.firebaseio.com",
-
 projectId: "oscar-votacao-b114a",
-
 storageBucket: "oscar-votacao-b114a.firebasestorage.app",
-
 messagingSenderId: "452345552218",
-
 appId: "1:452345552218:web:6dd321cd5a6e4bcf91e763"
-
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
 
 window.votar = function(){
@@ -135,18 +142,26 @@ window.votar = function(){
 let nome = document.getElementById("personagem").value;
 
 push(ref(db,"votos"),{
-
 nome:nome
-
 });
 
 alert("Voto enviado!");
 
 };
 
-const votosRef = ref(db,"votos");
+window.verResultados = function(){
 
-onValue(votosRef,(snapshot)=>{
+let senha = document.getElementById("senhaAdmin").value;
+
+if(senha !== "30042012"){
+alert("Senha incorreta");
+return;
+}
+
+document.getElementById("ranking").style.display="block";
+document.getElementById("tituloRanking").style.display="block";
+
+onValue(ref(db,"votos"),(snapshot)=>{
 
 let dados = snapshot.val();
 
@@ -174,6 +189,8 @@ html += r[0] + " — " + r[1] + " votos<br>";
 document.getElementById("ranking").innerHTML = html;
 
 });
+
+}
 
 </script>
 
