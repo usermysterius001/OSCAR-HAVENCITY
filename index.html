@@ -11,174 +11,105 @@
         .container { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
         .card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 20px; width: 280px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .card:hover { border-color: #ffd700; transform: translateY(-5px); }
-        .card h2 { color: #ffd700; font-size: 1.2em; margin-top: 0; height: 40px; display: flex; align-items: center; justify-content: center; }
-        .card p { font-size: 0.85em; color: #888; height: 35px; }
-        select { width: 100%; padding: 10px; margin: 15px 0; background: #262626; color: white; border: 1px solid #444; border-radius: 5px; font-size: 0.9em; }
+        .card h2 { color: #ffd700; font-size: 1.1em; margin-top: 0; height: 45px; display: flex; align-items: center; justify-content: center; }
+        select { width: 100%; padding: 10px; margin: 15px 0; background: #262626; color: white; border: 1px solid #444; border-radius: 5px; }
         .btn-voto { width: 100%; padding: 12px; background: linear-gradient(45deg, #ffd700, #b8860b); color: black; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; }
-        .btn-voto:hover { filter: brightness(1.2); }
         #admin { margin-top: 60px; padding: 40px; background: #111; border-top: 2px solid #333; }
-        .resultados { display: none; margin-top: 20px; }
-        table { width: 100%; max-width: 600px; margin: 15px auto; border-collapse: collapse; background: #1a1a1a; font-size: 0.9em; }
-        td, th { border: 1px solid #333; padding: 12px; text-align: left; }
-        th { background: #ffd700; color: black; }
-        input[type="password"] { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; margin-bottom: 10px; }
+        table { width: 100%; max-width: 600px; margin: 15px auto; border-collapse: collapse; background: #1a1a1a; }
+        td, th { border: 1px solid #333; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🏆 OSCAR REBORN AU 🏆</h1>
-    <p>Escolha seus favoritos e envie seu voto!</p>
 </header>
 
-<div class="container">
-    <script>
-        const herois = ["Alder Florence", "Arkan Chloropterus Good Zephir", "Clarice Franchesca de Mordred", "Dante Montclair", "Dimitri Diometris", "Gal-Sal. 'Fritz'", "Jason Gewitter", "Jorenina 'Fritz' Electro", "Jota Dantas", "July Suertes", "Lúcio Davo 'Henri Juan'", "Luna", "Sierra Woods", "Tyler Stellarium", "Vexy Montclair"].sort();
-        const viloes = ["Aline / Coelho Rosa", "Coelho Dourado", "Mike / Lobo Dourado", "Sarah Good"].sort();
-        const casais = ["Arkan x Vexy Montclair", "Alder x Dimitri", "Gal sal x Vexy", "Dimitri x July", "\"Jota\" x Jason", "Alder x Braço"].sort();
-        const todos = [...herois, ...viloes].sort();
-
-        function gerarOptions(lista) {
-            return '<option value="">Selecione...</option>' + lista.map(n => `<option value="${n}">${n}</option>`).join('');
-        }
-
-        // DADOS DO SEU NOVO FORMULÁRIO
-        const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdaNP0Voakl1j8l-VkaapwGX4mDnuOIP7QB7ji7_S_jK9o_3w/formResponse";
-        const ID_CAT = "entry.1402263222";
-        const ID_CAN = "entry.724967342";
-
-        function votar(cat, idSelect) {
-            const nome = document.getElementById(idSelect).value;
-            if(!nome) return alert("Por favor, selecione um nome!");
-
-            const formData = new FormData();
-            formData.append(ID_CAT, cat);
-            formData.append(ID_CAN, nome);
-
-            fetch(FORM_URL, {
-                method: "POST",
-                mode: "no-cors",
-                body: formData
-            }).then(() => {
-                alert("Sucesso! Seu voto em " + nome + " foi computado.");
-                let vLocal = JSON.parse(localStorage.getItem('votos_oscar_v3') || '{}');
-                if(!vLocal[cat]) vLocal[cat] = {};
-                vLocal[cat][nome] = (vLocal[cat][nome] || 0) + 1;
-                localStorage.setItem('votos_oscar_v3', JSON.stringify(vLocal));
-            }).catch(() => alert("Erro ao enviar. Verifique sua conexão."));
-        }
-    </script>
-
-    <div class="card">
-        <h2>Melhor Protagonista</h2>
-        <p>A alma da história.</p>
-        <select id="sel-0"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Melhor Protagonista', 'sel-0')">Votar</button>
-    </div>
-
-    <div class="card" style="border-color: #ff4444;">
-        <h2>Melhor Vilão</h2>
-        <p>O terror do Reborn AU.</p>
-        <select id="sel-1"><script>document.write(gerarOptions(viloes))</script></select>
-        <button class="btn-voto" onclick="votar('Melhor Vilão', 'sel-1')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Melhor Casal (Shipp)</h2>
-        <p>A maior química do servidor.</p>
-        <select id="sel-casal"><script>document.write(gerarOptions(casais))</script></select>
-        <button class="btn-voto" onclick="votar('Melhor Casal', 'sel-casal')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Mais Medroso</h2>
-        <p>Aquele que corre do perigo.</p>
-        <select id="sel-2"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Mais Medroso', 'sel-2')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Saco de Pancadas</h2>
-        <p>O que mais sofreu fisicamente.</p>
-        <select id="sel-3"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Saco de Pancadas', 'sel-3')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Mais Misterioso</h2>
-        <p>O personagem enigmático.</p>
-        <select id="sel-4"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Mais Misterioso', 'sel-4')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Maior Drama / Surto</h2>
-        <p>Performance digna de Oscar.</p>
-        <select id="sel-5"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Maior Drama', 'sel-5')">Votar</button>
-    </div>
-
-    <div class="card">
-        <h2>Melhor Design</h2>
-        <p>O visual mais icônico.</p>
-        <select id="sel-6"><script>document.write(gerarOptions(herois))</script></select>
-        <button class="btn-voto" onclick="votar('Melhor Design', 'sel-6')">Votar</button>
-    </div>
-
-    <div class="card" style="border-color: #ffd700; background: #221a00;">
-        <h2>Causador do Apocalipse</h2>
-        <p>O maior perigo do mundo.</p>
-        <select id="sel-7"><script>document.write(gerarOptions(todos))</script></select>
-        <button class="btn-voto" onclick="votar('Apocalipse', 'sel-7')">Votar</button>
-    </div>
-</div>
+<div class="container" id="cards-container"></div>
 
 <section id="admin">
     <h3>🔒 Painel Secreto</h3>
     <input type="password" id="senha" placeholder="Senha">
-    <br>
     <button onclick="abrirAdmin()">Ver Placar</button>
-    <div id="res" class="resultados"></div>
+    <div id="res" style="display:none; margin-top:20px;"></div>
 </section>
 
 <script>
-    const PASS = "30042012";
+    const herois = ["Alder Florence", "Arkan Chloropterus Good Zephir", "Clarice Franchesca de Mordred", "Dante Montclair", "Dimitri Diometris", "Gal-Sal. 'Fritz'", "Jason Gewitter", "Jorenina 'Fritz' Electro", "Jota Dantas", "July Suertes", "Lúcio Davo 'Henri Juan'", "Luna", "Sierra Woods", "Tyler Stellarium", "Vexy Montclair"].sort();
+    const viloes = ["Aline / Coelho Rosa", "Coelho Dourado", "Mike / Lobo Dourado", "Sarah Good"].sort();
+    const casais = ["Arkan x Vexy Montclair", "Alder x Dimitri", "Gal sal x Vexy", "Dimitri x July", "\"Jota\" x Jason", "Alder x Braço"].sort();
+    const todos = [...herois, ...viloes].sort();
+
+    const categorias = [
+        {nome: "Melhor Protagonista", lista: herois},
+        {nome: "Melhor Vilão", lista: viloes},
+        {nome: "Melhor Casal (Shipp)", lista: casais},
+        {nome: "Mais Medroso", lista: herois},
+        {nome: "Saco de Pancadas", lista: herois},
+        {nome: "Mais Misterioso", lista: herois},
+        {nome: "Maior Drama / Surto", lista: herois},
+        {nome: "Melhor Design", lista: herois},
+        {nome: "Causador do Apocalipse", lista: todos}
+    ];
+
+    const container = document.getElementById('cards-container');
+    categorias.forEach((cat, index) => {
+        container.innerHTML += `
+            <div class="card">
+                <h2>${cat.nome}</h2>
+                <select id="sel-${index}">
+                    <option value="">Selecione...</option>
+                    ${cat.lista.map(n => `<option value="${n}">${n}</option>`).join('')}
+                </select>
+                <button class="btn-voto" onclick="votar('${cat.nome}', 'sel-${index}')">Votar</button>
+            </div>`;
+    });
+
+    const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdaNP0Voakl1j8l-VkaapwGX4mDnuOIP7QB7ji7_S_jK9o_3w/formResponse";
+    
+    function votar(catNome, selectId) {
+        const candidato = document.getElementById(selectId).value;
+        if(!candidato) return alert("Selecione um nome!");
+
+        const formData = new FormData();
+        formData.append("entry.1402263222", catNome);
+        formData.append("entry.724967342", candidato);
+
+        fetch(FORM_URL, { method: "POST", mode: "no-cors", body: formData })
+        .then(() => {
+            alert("Voto registrado!");
+            let v = JSON.parse(localStorage.getItem('oscar_v_final') || '{}');
+            if(!v[catNome]) v[catNome] = {};
+            v[catNome][candidato] = (v[catNome][candidato] || 0) + 1;
+            localStorage.setItem('oscar_v_final', JSON.stringify(v));
+        }).catch(() => alert("Erro ao votar."));
+    }
 
     function abrirAdmin() {
-        if(document.getElementById('senha').value !== PASS) return alert("Senha incorreta!");
-        document.querySelector('.resultados').style.display = "block";
-        exibirResultados();
+        if(document.getElementById('senha').value !== "30042012") return alert("Senha incorreta!");
+        const resDiv = document.getElementById('res');
+        resDiv.style.display = "block";
+        exibirPlacar();
     }
 
-    function exibirResultados() {
-        let v = JSON.parse(localStorage.getItem('votos_oscar_v3') || '{}');
+    function exibirPlacar() {
+        let v = JSON.parse(localStorage.getItem('oscar_v_final') || '{}');
         let h = "";
-        
-        if (Object.keys(v).length === 0) {
-            h = "<p>Nenhum voto registrado localmente.</p>";
-        } else {
-            for(let c in v) {
-                let t = Object.values(v[c]).reduce((a,b)=>a+b, 0);
-                h += `<h3>${c}</h3><table><tr><th>Nome</th><th>Votos</th><th>%</th></tr>`;
-                for(let o in v[c]) {
-                    h += `<tr><td>${o}</td><td>${v[c][o]}</td><td>${((v[c][o]/t)*100).toFixed(1)}%</td></tr>`;
-                }
-                h += `</table>`;
-            }
+        for(let c in v) {
+            h += `<h3>${c}</h3><table>`;
+            for(let p in v[c]) h += `<tr><td>${p}</td><td>${v[c][p]} votos</td></tr>`;
+            h += `</table>`;
         }
-        
-        // Adiciona o botão de Reset no final
-        h += `<br><button onclick="resetarVotosLocais()" style="background:#cc0000; color:white; border:none; padding:10px; cursor:pointer; border-radius:5px; font-weight:bold;">ZERAR VOTOS DESTE PC</button>`;
-        h += `<p style="font-size:0.7em; color:#888; margin-top:10px;">*Lembre-se de limpar o Google Forms manualmente também!</p>`;
-        
-        document.getElementById('res').innerHTML = h;
+        h += `<br><button onclick="resetar()" style="background:red; color:white; border:none; padding:10px; cursor:pointer;">RESETAR VOTOS LOCAIS</button>`;
+        document.getElementById('res').innerHTML = h || "Nenhum voto local ainda.";
     }
 
-    function resetarVotosLocais() {
-        if(confirm("Tem certeza que deseja apagar os votos salvos NESTE computador? Isso não apaga os dados da planilha do Google!")) {
-            localStorage.removeItem('votos_oscar_v3');
-            exibirResultados();
-            alert("Dados locais limpos!");
+    function resetar() {
+        if(confirm("Zerar votos deste PC?")) {
+            localStorage.removeItem('oscar_v_final');
+            exibirPlacar();
         }
     }
 </script>
+</body>
+</html>
