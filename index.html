@@ -1,379 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 OSCAR REBORN AU 🏆</title>
+<style>
+  /* Reset básico */
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Georgia', serif; }
+  body { background: linear-gradient(180deg, #0a0a0a, #1a1a1a); color:#fff; }
+  header { text-align:center; padding:2rem; background:#111; box-shadow:0 5px 15px rgba(0,0,0,0.7);}
+  header h1 { font-size:3rem; color:#FFD700; text-shadow: 2px 2px 10px #000; }
+
+  .container { display:grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; padding:2rem; }
+
+  .card { background:#1c1c1c; padding:1.5rem; border-radius:15px; box-shadow: 0 5px 25px rgba(0,0,0,0.7); transition: transform 0.3s, box-shadow 0.3s; }
+  .card:hover { transform: translateY(-5px); box-shadow:0 10px 35px rgba(255,215,0,0.5); }
+  .card h3 { margin-bottom:0.5rem; color:#FFD700; }
+  .desc { font-size:0.9rem; margin-bottom:1rem; color:#ccc; }
+
+  select { width:100%; padding:0.5rem; border-radius:8px; border:none; margin-bottom:0.8rem; background:#333; color:#fff; }
+  button { width:100%; padding:0.7rem; border:none; border-radius:8px; background:#FFD700; color:#111; font-weight:bold; cursor:pointer; transition:0.3s; }
+  button:hover { background:#e6c200; }
+
+  .admin { background:#111; padding:1.5rem; border-radius:15px; margin:2rem; text-align:center; }
+  .admin input { padding:0.5rem; border-radius:8px; border:none; width:60%; margin-bottom:1rem; }
+
+  #painel { display:none; background:#1c1c1c; padding:1.5rem; border-radius:15px; margin:2rem; box-shadow:0 5px 25px rgba(0,0,0,0.7); }
+  #painel h2 { color:#FFD700; margin-bottom:1rem; }
+  #resultados h3 { color:#ffcc00; margin-top:1rem; }
+  #resultados div { margin-left:1rem; margin-bottom:0.3rem; }
+</style>
+</head>
 <body>
 
 <header>
-  <h1>🏆 OSCAR REBORN AU 🏆</h1>
+<h1>🏆 OSCAR REBORN AU 🏆</h1>
 </header>
 
 <div class="container">
 
-  <!-- 1️⃣ Melhor Personagem -->
-  <div class="card">
-    <h3>⭐ Melhor Personagem</h3>
-    <div class="desc">Personagem mais marcante e importante da história.</div>
-    <select id="cat1">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat1','Melhor Personagem')">Votar</button>
-  </div>
+<!-- 15 CATEGORIAS COM ID ÚNICO -->
+<script>
+const personagens = [
+"Alder Florence","Arkan Chloropterus Good Zephir","Clarice Franchesca de Mordred",
+"Dante Montclair","Dimitri Diometris","Gal-Sal","Henri Juan","Jason Gewitter",
+"Jorenina \"Fritz\" Electro","Jota Dantas","July Suertes","Lúcio Davo",
+"Luna","Sierra Woods","Tyler Stellarium","Vexy Montclair",
+"Aline (Coelho Rosa)","C!Áster","Coelho Dourado","Mike (Lobo Dourado)","Sarah Good"
+];
 
-  <!-- 2️⃣ Alívio Cômico -->
-  <div class="card">
-    <h3>😂 Alívio Cômico</h3>
-    <div class="desc">Personagem responsável pelos momentos mais engraçados da história.</div>
-    <select id="cat2">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat2','Alívio Cômico')">Votar</button>
-  </div>
+const categorias = [
+{nome:"Melhor Personagem", emoji:"⭐", desc:"Personagem mais marcante e importante da história.", opcoes:personagens.slice(0,16)},
+{nome:"Alívio Cômico", emoji:"😂", desc:"Personagem responsável pelos momentos mais engraçados da história.", opcoes:personagens.slice(0,16)},
+{nome:"Mais Misterioso", emoji:"🕵️", desc:"Personagem ou vilão com passado mais enigmático.", opcoes:personagens},
+{nome:"Melhor Vilão", emoji:"😈", desc:"Antagonista mais impactante da história.", opcoes:personagens.slice(16)},
+{nome:"Melhor Performance Dramática", emoji:"🎭", desc:"Atuação mais intensa e emocional.", opcoes:personagens.slice(0,16)},
+{nome:"Personagem Mais Carismático", emoji:"💖", desc:"Personagem que conquistou todos com sua presença e charme.", opcoes:personagens.slice(0,16)},
+{nome:"Personagem Mais Heroico", emoji:"⚡", desc:"Personagem que realizou os atos mais corajosos e inspiradores.", opcoes:personagens.slice(0,16)},
+{nome:"Personagem Mais Estratégico", emoji:"🧩", desc:"Personagem que se destacou pela inteligência e planos engenhosos.", opcoes:personagens.slice(0,16)},
+{nome:"Revelação do Ano", emoji:"🌟", desc:"Personagem que mais surpreendeu os espectadores.", opcoes:personagens.slice(0,16)},
+{nome:"Melhor Romance", emoji:"💌", desc:"Dupla ou casal com química mais marcante.", opcoes:personagens.slice(0,16)},
+{nome:"Melhor Amigo", emoji:"🤝", desc:"Personagem mais leal e confiável.", opcoes:personagens.slice(0,16)},
+{nome:"Vilão Mais Inteligente", emoji:"🧠", desc:"Antagonista que se destacou pelo planejamento e astúcia.", opcoes:personagens.slice(16)},
+{nome:"Vilão Mais Cruel", emoji:"💀", desc:"Antagonista que causou mais sofrimento.", opcoes:personagens.slice(16)},
+{nome:"Crossover Mais Interessante", emoji:"🔗", desc:"Personagem que teve melhor interação com outros universos/personagens.", opcoes:personagens.slice(0,16)},
+{nome:"Melhor Cena", emoji:"🎬", desc:"Cena ou momento mais marcante da história.", opcoes:personagens.slice(0,16)}
+];
 
-  <!-- 3️⃣ Mais Misterioso -->
+categorias.forEach((cat,i)=>{
+  document.write(`
   <div class="card">
-    <h3>🕵️ Mais Misterioso</h3>
-    <div class="desc">Personagem ou vilão com passado mais enigmático.</div>
-    <select id="cat3">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-      <option>Aline (Coelho Rosa)</option>
-      <option>C!Áster</option>
-      <option>Coelho Dourado</option>
-      <option>Mike (Lobo Dourado)</option>
-      <option>Sarah Good</option>
+    <h3>${cat.emoji} ${cat.nome}</h3>
+    <div class="desc">${cat.desc}</div>
+    <select id="cat${i+1}">
+      ${cat.opcoes.map(p=>`<option>${p}</option>`).join("")}
     </select>
-    <button onclick="votar('cat3','Mais Misterioso')">Votar</button>
+    <button onclick="votar('cat${i+1}','${cat.nome}')">Votar</button>
   </div>
-
-  <!-- 4️⃣ Melhor Vilão -->
-  <div class="card">
-    <h3>😈 Melhor Vilão</h3>
-    <div class="desc">Antagonista mais impactante da história.</div>
-    <select id="cat4">
-      <option>Aline (Coelho Rosa)</option>
-      <option>C!Áster</option>
-      <option>Coelho Dourado</option>
-      <option>Mike (Lobo Dourado)</option>
-      <option>Sarah Good</option>
-    </select>
-    <button onclick="votar('cat4','Melhor Vilão')">Votar</button>
-  </div>
-
-  <!-- 5️⃣ Melhor Performance Dramática -->
-  <div class="card">
-    <h3>🎭 Melhor Performance Dramática</h3>
-    <div class="desc">Personagem que teve a atuação mais intensa e emocional.</div>
-    <select id="cat5">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat5','Melhor Performance Dramática')">Votar</button>
-  </div>
-
-  <!-- 6️⃣ Personagem Mais Carismático -->
-  <div class="card">
-    <h3>💖 Personagem Mais Carismático</h3>
-    <div class="desc">Personagem que conquistou todos com sua presença e charme.</div>
-    <select id="cat6">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat6','Personagem Mais Carismático')">Votar</button>
-  </div>
-
-  <!-- 7️⃣ Personagem Mais Heroico -->
-  <div class="card">
-    <h3>⚡ Personagem Mais Heroico</h3>
-    <div class="desc">Personagem que realizou os atos mais corajosos e inspiradores.</div>
-    <select id="cat7">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat7','Personagem Mais Heroico')">Votar</button>
-  </div>
-
-  <!-- 8️⃣ Personagem Mais Estratégico -->
-  <div class="card">
-    <h3>🧩 Personagem Mais Estratégico</h3>
-    <div class="desc">Personagem que se destacou pela inteligência e planos engenhosos.</div>
-    <select id="cat8">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat8','Personagem Mais Estratégico')">Votar</button>
-  </div>
-
-  <!-- 9️⃣ Revelação do Ano -->
-  <div class="card">
-    <h3>🌟 Revelação do Ano</h3>
-    <div class="desc">Personagem que mais surpreendeu os espectadores em sua estreia ou destaque recente.</div>
-    <select id="cat9">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat9','Revelação do Ano')">Votar</button>
-  </div>
-
-  <!-- 10️⃣ Melhor Romance -->
-  <div class="card">
-    <h3>💌 Melhor Romance</h3>
-    <div class="desc">Dupla ou casal com química mais marcante na história.</div>
-    <select id="cat10">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat10','Melhor Romance')">Votar</button>
-  </div>
-
-  <!-- 11️⃣ Melhor Amigo -->
-  <div class="card">
-    <h3>🤝 Melhor Amigo</h3>
-    <div class="desc">Personagem mais leal e confiável.</div>
-    <select id="cat11">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat11','Melhor Amigo')">Votar</button>
-  </div>
-
-  <!-- 12️⃣ Vilão Mais Inteligente -->
-  <div class="card">
-    <h3>🧠 Vilão Mais Inteligente</h3>
-    <div class="desc">Antagonista que se destacou pelo planejamento e astúcia.</div>
-    <select id="cat12">
-      <option>Aline (Coelho Rosa)</option>
-      <option>C!Áster</option>
-      <option>Coelho Dourado</option>
-      <option>Mike (Lobo Dourado)</option>
-      <option>Sarah Good</option>
-    </select>
-    <button onclick="votar('cat12','Vilão Mais Inteligente')">Votar</button>
-  </div>
-
-  <!-- 13️⃣ Vilão Mais Cruel -->
-  <div class="card">
-    <h3>💀 Vilão Mais Cruel</h3>
-    <div class="desc">Antagonista que causou mais sofrimento.</div>
-    <select id="cat13">
-      <option>Aline (Coelho Rosa)</option>
-      <option>C!Áster</option>
-      <option>Coelho Dourado</option>
-      <option>Mike (Lobo Dourado)</option>
-      <option>Sarah Good</option>
-    </select>
-    <button onclick="votar('cat13','Vilão Mais Cruel')">Votar</button>
-  </div>
-
-  <!-- 14️⃣ Crossover Mais Interessante -->
-  <div class="card">
-    <h3>🔗 Crossover Mais Interessante</h3>
-    <div class="desc">Personagem que teve melhor interação com outros universos/personagens.</div>
-    <select id="cat14">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat14','Crossover Mais Interessante')">Votar</button>
-  </div>
-
-  <!-- 15️⃣ Melhor Cena -->
-  <div class="card">
-    <h3>🎬 Melhor Cena</h3>
-    <div class="desc">Cena ou momento mais marcante da história.</div>
-    <select id="cat15">
-      <option>Alder Florence</option>
-      <option>Arkan Chloropterus Good Zephir</option>
-      <option>Clarice Franchesca de Mordred</option>
-      <option>Dante Montclair</option>
-      <option>Dimitri Diometris</option>
-      <option>Gal-Sal</option>
-      <option>Henri Juan</option>
-      <option>Jason Gewitter</option>
-      <option>Jorenina "Fritz" Electro</option>
-      <option>Jota Dantas</option>
-      <option>July Suertes</option>
-      <option>Lúcio Davo</option>
-      <option>Luna</option>
-      <option>Sierra Woods</option>
-      <option>Tyler Stellarium</option>
-      <option>Vexy Montclair</option>
-    </select>
-    <button onclick="votar('cat15','Melhor Cena')">Votar</button>
-  </div>
+  `);
+});
+</script>
 
 </div>
 
 <!-- PAINEL ADMIN -->
 <div class="admin">
-  <h3>🔐 Painel do Administrador</h3>
-  <input type="password" id="senha" placeholder="Senha"><br><br>
-  <button onclick="abrirPainel()">Abrir Painel</button>
-  <button onclick="resetar()">Resetar votos</button>
+<h3>🔐 Painel do Administrador</h3>
+<input type="password" id="senha" placeholder="Senha"><br><br>
+<button onclick="abrirPainel()">Abrir Painel</button>
+<button onclick="resetar()">Resetar votos</button>
 </div>
 
-<div id="painel" style="display:none;">
-  <h2>📊 Resultados</h2>
-  <div id="resultados"></div>
+<div id="painel">
+<h2>📊 Resultados</h2>
+<div id="resultados"></div>
 </div>
 
-<!-- SCRIPT -->
+<!-- FIREBASE & JS -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyBwArCoZgIUuxkmfn_3L2Up4GDW1-5UOkc",
-  authDomain:"oscar-votacao-b114a.firebase
+  authDomain:"oscar-votacao-b114a.firebaseapp.com",
+  databaseURL:"https://oscar-votacao-b114a-default-rtdb.firebaseio.com",
+  projectId:"oscar-votacao-b114a",
+  storageBucket:"oscar-votacao-b114a.appspot.com",
+  messagingSenderId:"452345552218",
+  appId:"1:452345552218:web:6dd321cd5a6e4bcf91e763"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Função de votar
+window.votar = (selectId,categoriaFirebase)=>{
+  if(localStorage.getItem("votou_"+selectId)){
+    alert("Você já votou nessa categoria.");
+    return;
+  }
+  let valor=document.getElementById(selectId).value;
+  push(ref(db,"votos/"+categoriaFirebase),{nome:valor});
+  localStorage.setItem("votou_"+selectId,true);
+  alert("Voto enviado!");
+}
+
+// Abrir painel admin
+window.abrirPainel=()=>{
+  if(document.getElementById("senha").value!="Araldo3004"){ alert("Senha incorreta"); return; }
+  document.getElementById("painel").style.display="block";
+  onValue(ref(db,"votos"),snapshot=>{
+    let dados=snapshot.val(); let html="";
+    for(let cat in dados){
+      let contagem={};
+      for(let id in dados[cat]){
+        let nome=dados[cat][id].nome;
+        contagem[nome]=(contagem[nome]||0)+1;
+      }
+      let ranking=Object.entries(contagem).sort((a,b)=>b[1]-a[1]);
+      html+=`<h3>${cat}</h3>`;
+      ranking.forEach(r=>{ html+=`<div>${r[0]} — ${r[1]} votos</div>`; });
+    }
+    document.getElementById("resultados").innerHTML=html;
+  });
+}
+
+// Resetar votos
+window.resetar=()=>{
+  if(document.getElementById("senha").value!="Araldo3004"){ alert("Senha incorreta"); return; }
+  remove(ref(db,"votos")).then(()=>{ alert("Votos apagados"); document.getElementById("resultados").innerHTML=""; });
+}
+</script>
+
+</body>
+</html>
