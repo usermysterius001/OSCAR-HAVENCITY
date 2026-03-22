@@ -72,8 +72,9 @@
         if(!candidato) return alert("Selecione um nome!");
 
         const formData = new FormData();
-        formData.append("entry.1402263222", catNome);
-        formData.append("entry.724967342", candidato);
+        // Substitua estas duas linhas no seu código:
+formData.append("entry.1017849174", catNome);    // ID correto para Categoria
+formData.append("entry.1983084318", candidato);  // ID correto para Candidato
 
         fetch(FORM_URL, { method: "POST", mode: "no-cors", body: formData })
         .then(() => {
