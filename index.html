@@ -25,31 +25,52 @@
         td, th { border: 1px solid #333; padding: 12px; text-align: left; }
         th { background: #ffd700; color: black; }
         input[type="password"] { padding: 10px; border-radius: 5px; border: 1px solid #444; background: #222; color: white; margin-bottom: 10px; }
-        .btn-reset { background: #600; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 5px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🏆 OSCAR REBORN AU 🏆</h1>
-    <p>Vote nos seus favoritos abaixo!</p>
+    <p>Vote nos seus favoritos e os dados irão para a planilha!</p>
 </header>
 
 <div class="container">
     <script>
-        const herois = [
-            "Alder Florence", "Arkan Chloropterus Good Zephir", "Clarice Franchesca de Mordred", 
-            "Dante Montclair", "Dimitri Diometris", "Gal-Sal. 'Fritz'", "Jason Gewitter", 
-            "Jorenina 'Fritz' Electro", "Jota Dantas", "July Suertes", "Lúcio Davo 'Henri Juan'", 
-            "Luna", "Sierra Woods", "Tyler Stellarium", "Vexy Montclair"
-        ].sort();
-
+        // LISTAS
+        const herois = ["Alder Florence", "Arkan Chloropterus Good Zephir", "Clarice Franchesca de Mordred", "Dante Montclair", "Dimitri Diometris", "Gal-Sal. 'Fritz'", "Jason Gewitter", "Jorenina 'Fritz' Electro", "Jota Dantas", "July Suertes", "Lúcio Davo 'Henri Juan'", "Luna", "Sierra Woods", "Tyler Stellarium", "Vexy Montclair"].sort();
         const viloes = ["Aline / Coelho Rosa", "Coelho Dourado", "Mike / Lobo Dourado", "Sarah Good"].sort();
         const casais = ["Arkan x Vexy Montclair", "Alder x Dimitri", "Gal sal x Vexy", "Dimitri x July", "\"Jota\" x Jason", "Alder x Braço"].sort();
         const todos = [...herois, ...viloes].sort();
 
         function gerarOptions(lista) {
             return '<option value="">Selecione...</option>' + lista.map(n => `<option value="${n}">${n}</option>`).join('');
+        }
+
+        // CONFIGURAÇÃO GOOGLE FORMS
+        const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd7X9S028_X2tS9C5m9xKqD66t95D_WzP8B6j-oYpE66l709Q/formResponse";
+        const ID_CAT = "entry.1017849174";
+        const ID_CAN = "entry.1983084318";
+
+        function votar(cat, idSelect) {
+            const nome = document.getElementById(idSelect).value;
+            if(!nome) return alert("Por favor, selecione um nome!");
+
+            const formData = new FormData();
+            formData.append(ID_CAT, cat);
+            formData.append(ID_CAN, nome);
+
+            fetch(FORM_URL, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            }).then(() => {
+                alert("Sucesso! Seu voto em " + nome + " foi enviado para a planilha do Reborn AU.");
+                // Opcional: salva localmente também
+                let vLocal = JSON.parse(localStorage.getItem('votos_oscar') || '{}');
+                if(!vLocal[cat]) vLocal[cat] = {};
+                vLocal[cat][nome] = (vLocal[cat][nome] || 0) + 1;
+                localStorage.setItem('votos_oscar', JSON.stringify(vLocal));
+            }).catch(() => alert("Erro ao enviar. Tente novamente!"));
         }
     </script>
 
@@ -118,56 +139,27 @@
 </div>
 
 <section id="admin">
-    <h3>🔒 Painel do Organizador</h3>
-    <input type="password" id="senha" placeholder="Digite a senha">
+    <h3>🔒 Painel Secreto (Resultados Locais)</h3>
+    <input type="password" id="senha" placeholder="Senha">
     <br>
-    <button onclick="abrirAdmin()" style="padding: 10px 20px; cursor: pointer;">Acessar Resultados</button>
+    <button onclick="abrirAdmin()">Ver Placar</button>
     <div id="res" class="resultados"></div>
 </section>
 
 <script>
     const PASS = "30042012";
-
-    function votar(cat, id) {
-        const nome = document.getElementById(id).value;
-        if(!nome) return alert("Por favor, selecione um nome!");
-        
-        let votos = JSON.parse(localStorage.getItem('oscar_v2_final') || '{}');
-        if(!votos[cat]) votos[cat] = {};
-        votos[cat][nome] = (votos[cat][nome] || 0) + 1;
-        
-        localStorage.setItem('oscar_v2_final', JSON.stringify(votos));
-        alert("Voto em " + nome + " registrado!");
-    }
-
     function abrirAdmin() {
-        if(document.getElementById('senha').value !== PASS) return alert("Senha Incorreta!");
+        if(document.getElementById('senha').value !== PASS) return alert("Errado!");
         document.querySelector('.resultados').style.display = "block";
-        exibir();
-    }
-
-    function exibir() {
-        let votos = JSON.parse(localStorage.getItem('oscar_v2_final') || '{}');
-        let html = "";
-        for(let cat in votos) {
-            let total = Object.values(votos[cat]).reduce((a,b)=>a+b, 0);
-            html += `<h3>${cat} (Total: ${total})</h3><table><tr><th>Nome</th><th>Votos</th><th>%</th></tr>`;
-            for(let oc in votos[cat]) {
-                let v = votos[cat][oc];
-                let p = ((v/total)*100).toFixed(1);
-                html += `<tr><td>${oc}</td><td>${v}</td><td><strong>${p}%</strong></td></tr>`;
-            }
-            html += `</table>`;
+        let v = JSON.parse(localStorage.getItem('votos_oscar') || '{}');
+        let h = "";
+        for(let c in v) {
+            let t = Object.values(v[c]).reduce((a,b)=>a+b, 0);
+            h += `<h3>${c}</h3><table>`;
+            for(let o in v[c]) h += `<tr><td>${o}</td><td>${v[c][o]}</td><td>${((v[c][o]/t)*100).toFixed(1)}%</td></tr>`;
+            h += `</table>`;
         }
-        html += `<button class="btn-reset" onclick="resetar()">ZERAR TUDO</button>`;
-        document.getElementById('res').innerHTML = html || "Nenhum voto computado.";
-    }
-
-    function resetar() {
-        if(confirm("Deseja apagar todos os votos?")) {
-            localStorage.removeItem('oscar_v2_final');
-            exibir();
-        }
+        document.getElementById('res').innerHTML = h || "Acesse a planilha do Google para o total real!";
     }
 </script>
 
